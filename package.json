@@ -1,0 +1,44 @@
+{
+  "name": "pinteor",
+  "version": "1.0.0",
+  "description": "pinterest like app build with node and react",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon --use_strict index.js",
+    "bundle": "webpack"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/angvillar/pinteor.git"
+  },
+  "keywords": [
+    "app",
+    "react",
+    "node",
+    "pinterest"
+  ],
+  "author": "angvillar",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/angvillar/pinteor/issues"
+  },
+  "homepage": "https://github.com/angvillar/pinteor#readme",
+  "dependencies": {
+    "@material-ui/core": "^1.0.0",
+    "body-parser": "^1.18.3",
+    "express": "^4.16.3",
+    "react": "^16.4.0",
+    "react-dom": "^16.4.0",
+    "react-router": "^4.2.0"
+  },
+  "devDependencies": {
+    "babel-core": "^6.26.3",
+    "babel-loader": "^7.1.4",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-react": "^6.24.1",
+    "nodemon": "^1.17.5",
+    "webpack": "^4.8.3",
+    "webpack-cli": "^2.1.4"
+  }
+}
