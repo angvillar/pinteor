@@ -1,15 +1,14 @@
 const express = require('express');
+const path = require('path');
 
 const app = express();
-// tell the app to look for static files in these directories
-app.use(express.static('./server/static/'));
-app.use(express.static('./client/dist/'));
 
-/*
-app.get('/', function (req, res) {
-  res.sendFile('index.html');
-})
-*/
+app.use(express.static(path.join(__dirname, 'server/static')));
+app.use(express.static(path.join(__dirname, 'client/dist')));
+
+app.get('*', function (req, res) {
+  res.sendFile(path.join(__dirname, 'server/static/index.html'));
+});
 
 // start the server
 app.listen(3000, () => {
