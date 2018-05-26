@@ -4,13 +4,9 @@ import SignUpForm from '../components/SignUpForm.jsx';
 
 class SignUpPage extends React.Component {
 
-  
-  // Class constructor.
-  
   constructor(props) {
     super(props);
 
-    // set the initial component state
     this.state = {
       errors: {},
       user: {
@@ -22,13 +18,8 @@ class SignUpPage extends React.Component {
 
     this.processForm = this.processForm.bind(this);
     this.changeUser = this.changeUser.bind(this);
-  }
+  };
 
-  
-  // Change the user object.
-   
-  // @param {object} event - the JavaScript event object
-   
   changeUser(event) {
     const field = event.target.name;
     const user = this.state.user;
@@ -37,25 +28,35 @@ class SignUpPage extends React.Component {
     this.setState({
       user
     });
-  }
-
-  
-  // Process the form.
-  
-  // @param {object} event - the JavaScript event object
+  };
   
   processForm(event) {
-    // prevent default action. in this case, action is the form submission event
     event.preventDefault();
+   
+    fetch('http://localhost:3000/api/signup', {
+      method: 'post',
+      headers: {
+        'Accept': 'application/json, text/plain, */*',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        name: this.state.user.name, 
+        email: this.state.user.email,
+        password: this.state.user.password,
+      })
+    }).then(res => {
+      if (res.status == '200') {
+        this.setState({ errors: {} });
+      }
+      if (res.status == '400') {
+        res.json().then(errors => {
+          console.log(errors);
+          this.setState({ errors });
+        });
+      }
+    });
+  };
 
-    console.log('name:', this.state.user.name);
-    console.log('email:', this.state.user.email);
-    console.log('password:', this.state.user.password);
-  }
-
-  
-  // Render the component.
-  
   render() {
     return (
       <SignUpForm
@@ -65,9 +66,8 @@ class SignUpPage extends React.Component {
         user={this.state.user}
       />
     );
-  }
+  };
 
 }
-
 
 export default SignUpPage;

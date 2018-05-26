@@ -26,6 +26,7 @@
   "homepage": "https://github.com/angvillar/pinteor#readme",
   "dependencies": {
     "@material-ui/core": "^1.0.0",
+    "ajv": "^6.5.0",
     "body-parser": "^1.18.3",
     "express": "^4.16.3",
     "prop-types": "^15.6.1",
