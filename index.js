@@ -1,7 +1,33 @@
 const path = require('path');
+const mongoose = require('mongoose');
 const express = require('express');
 const bodyParser = require('body-parser');
+const passport = require('passport');
 const Ajv = require('ajv');
+const User = require('./server/models/user.js');
+const localSignupStrategy = require('./server/passport/local-signup');
+
+
+mongoose.connect('mongodb://localhost/pinteor');
+const db = mongoose.connection;
+db.on('error', console.error.bind(console, 'connection error:'));
+db.once('open', () => console.log('connected'));
+
+User
+  .remove({})
+  .then(() => console.log('user collection removed'))
+  .catch(console.log)
+
+const newUser = new User({
+  name: 'jon',
+  email: 'jon@localhost.com',
+  password: 'snow',
+});
+
+newUser
+  .save()
+  .then(console.log)
+  .catch(console.log)
 
 const app = express();
 const ajv = new Ajv();
@@ -9,10 +35,10 @@ const ajv = new Ajv();
 app.use(express.static(path.join(__dirname, 'server/static')));
 app.use(express.static(path.join(__dirname, 'client/dist')));
 app.use(bodyParser.json());
+app.use(passport.initialize());
+passport.use('local-signup', localSignupStrategy);
 
-
-app.post('/api/signup', function (req, res) {
-  console.log(req.body);
+app.post('/api/signup', function (req, res, next) {
   const schema = {
     "properties": {
       "name": { "type": "string" },
@@ -34,7 +60,32 @@ app.post('/api/signup', function (req, res) {
     });
   }
   
-  return res.status(200).json({});
+  // return res.status(200).json({});
+  return passport.authenticate('local-signup', (err) => {
+    if (err) {
+      if (err.name === 'MongoError' && err.code === 11000) {
+        // the 11000 Mongo code is for a duplication email error
+        // the 409 HTTP status code is for conflict error
+        return res.status(409).json({
+          success: false,
+          message: 'Check the form for errors.',
+          errors: {
+            email: 'This email is already taken.'
+          }
+        });
+      }
+
+      return res.status(400).json({
+        success: false,
+        message: 'Could not process the form.'
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: 'You have successfully signed up! Now you should be able to log in.'
+    });
+  })(req, res, next);
 });
 
 app.get('*', function (req, res) {
