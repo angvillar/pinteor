@@ -8,7 +8,7 @@ class SignUpPage extends React.Component {
     super(props);
 
     this.state = {
-      errors: {},
+      errors: [],
       user: {
         email: '',
         name: '',
@@ -46,11 +46,16 @@ class SignUpPage extends React.Component {
       })
     }).then(res => {
       if (res.status == '200') {
-        this.setState({ errors: {} });
+        this.setState({ errors: [] });
       }
       if (res.status == '400') {
-        res.json().then(errors => {
-          console.log(errors);
+        res.json().then(data => {
+          const errors = data.errors.map( err => {
+            return {
+              'name': err.dataPath.substr(1),
+              'message': err.message
+            }
+          });
           this.setState({ errors });
         });
       }

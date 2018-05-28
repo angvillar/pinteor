@@ -30,7 +30,7 @@ newUser
   .catch(console.log)
 
 const app = express();
-const ajv = new Ajv();
+const ajv = new Ajv({ allErrors: true });
 
 app.use(express.static(path.join(__dirname, 'server/static')));
 app.use(express.static(path.join(__dirname, 'client/dist')));
@@ -41,9 +41,20 @@ passport.use('local-signup', localSignupStrategy);
 app.post('/api/signup', function (req, res, next) {
   const schema = {
     "properties": {
-      "name": { "type": "string" },
-      "email": { "type": "string", "format": "email" },
-      "password": { "type": "string" }
+      "name": { 
+        "type": "string",
+        "minLength": 4,
+        "maxLength": 10
+      },
+      "email": { 
+        "type": "string", 
+        "format": "email" 
+      },
+      "password": { 
+        "type": "string",
+        "minLength": 4,
+        "maxLength": 10 
+      }
     }
   };
   const validate = ajv.compile(schema);
