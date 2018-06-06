@@ -9,6 +9,7 @@ class SignUpPage extends React.Component {
 
     this.state = {
       errors: [],
+      message: '',
       user: {
         email: '',
         name: '',
@@ -45,20 +46,33 @@ class SignUpPage extends React.Component {
         password: this.state.user.password,
       })
     }).then(res => {
-      if (res.status == '200') {
-        this.setState({ errors: [] });
-      }
-      if (res.status == '400') {
-        res.json().then(data => {
+      res.json().then(data => {
+        console.log(data);
+        if (res.status == '200') {
+          this.setState({ 
+            errors: [],
+            message: data.message 
+          });
+        }
+        if (res.status == '400' || res.status == '409') {
           const errors = data.errors.map( err => {
             return {
               'name': err.dataPath.substr(1),
               'message': err.message
             }
           });
-          this.setState({ errors });
-        });
-      }
+          this.setState({ 
+            errors, 
+            message: data.message 
+          });
+        }
+        if (res.status == '500') {
+          this.setState({ 
+            errors: [], 
+            message:  data.message 
+          }); 
+        }
+      }); 
     });
   };
 
@@ -68,6 +82,7 @@ class SignUpPage extends React.Component {
         onSubmit={this.processForm}
         onChange={this.changeUser}
         errors={this.state.errors}
+        message={this.state.message}
         user={this.state.user}
       />
     );

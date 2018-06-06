@@ -12,7 +12,7 @@ import InputLabel from '@material-ui/core/InputLabel';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import FormControl from '@material-ui/core/FormControl';
 
-const SignUpForm = ({ onSubmit, onChange, errors, user }) => {
+const SignUpForm = ({ onSubmit, onChange, errors, message, user }) => {
 
   const hasErr = (name) => {
     return !!errors.filter(err => err.name === name).length;
@@ -26,6 +26,9 @@ const SignUpForm = ({ onSubmit, onChange, errors, user }) => {
     <Card>
       <CardContent>
         <form action="/" onSubmit={onSubmit}>
+          <Typography>
+            {message}
+          </Typography>
           <div className="field">  
             <FormControl error={hasErr('name')}>
               <InputLabel htmlFor="name">Name</InputLabel>
@@ -83,6 +86,7 @@ SignUpForm.propTypes = {
   onSubmit: PropTypes.func.isRequired,
   onChange: PropTypes.func.isRequired,
   errors: PropTypes.array.isRequired,
+  message: PropTypes.string.isRequired,
   user: PropTypes.object.isRequired
 };
 

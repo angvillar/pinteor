@@ -1,5 +1,6 @@
+const knex = require('../db.js');
 const PassportLocalStrategy = require('passport-local').Strategy;
-const User = require('mongoose').model('User');
+
 
 module.exports = new PassportLocalStrategy({
   usernameField: 'email',
@@ -7,16 +8,13 @@ module.exports = new PassportLocalStrategy({
   session: false,
   passReqToCallback: true
 }, (req, email, password, done) => {
-  const userData = {
+  const newUser = {
+    username: req.body.username.trim(),
     email: email.trim(),
-    password: password.trim(),
-    name: req.body.name.trim()
-  };
-
-  const newUser = new User(userData);
-  newUser.save((err) => {
-    if (err) { return done(err); }
-
-    return done(null);
-  });
+    password: password.trim()
+  }
+  return knex('users')
+    .insert(newUser)
+    .then(id => done(null))
+    .catch(done)
 });

@@ -1,11 +1,9 @@
+/*
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 
 const UserSchema = new mongoose.Schema({
-  email: {
-    type: String,
-    index: { unique: true }
-  },
+  email: String,
   password: String,
   name: String
 });
@@ -31,3 +29,4 @@ UserSchema.pre('save', function saveHook(next) {
 });
 
 module.exports = mongoose.model('User', UserSchema);
+*/
