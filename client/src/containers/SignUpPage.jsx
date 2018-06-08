@@ -12,7 +12,7 @@ class SignUpPage extends React.Component {
       message: '',
       user: {
         email: '',
-        name: '',
+        username: '',
         password: ''
       }
     };
@@ -34,14 +34,14 @@ class SignUpPage extends React.Component {
   processForm(event) {
     event.preventDefault();
    
-    fetch('http://localhost:3000/api/signup', {
+    fetch('http://localhost:3000/auth/signup', {
       method: 'post',
       headers: {
         'Accept': 'application/json, text/plain, */*',
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        name: this.state.user.name, 
+        username: this.state.user.username, 
         email: this.state.user.email,
         password: this.state.user.password,
       })

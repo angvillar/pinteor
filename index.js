@@ -112,9 +112,11 @@ const userSignupSchema = {
 const validateUserSignup = ajv.compile(userSignupSchema);
 
 function userSignupValidation(req, res, next) { 
+  console.log('body: ', req.body);
   validateUserSignup(req.body)
     .then(_ => next())
     .catch(err => {
+      console.log(err)
       // unique username and email error
       const keywordList =  R.map(err => err.keyword, err.errors);
       const isUserNameExistsError = R.contains('usernameExists', keywordList);

@@ -30,15 +30,15 @@ const SignUpForm = ({ onSubmit, onChange, errors, message, user }) => {
             {message}
           </Typography>
           <div className="field">  
-            <FormControl error={hasErr('name')}>
-              <InputLabel htmlFor="name">Name</InputLabel>
+            <FormControl error={hasErr('username')}>
+              <InputLabel htmlFor="username">Name</InputLabel>
               <Input 
-                id="name" 
-                name="name"
+                id="username" 
+                name="username"
                 onChange={onChange}
-                value={user.name}
+                value={user.username}
               />
-              <FormHelperText id="name-text">{ hasErr('name') ? errMessageFor('name') : '' }</FormHelperText>
+              <FormHelperText id="name-text">{ hasErr('username') ? errMessageFor('username') : '' }</FormHelperText>
             </FormControl>
           </div>
           <div className="field">
