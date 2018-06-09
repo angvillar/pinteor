@@ -1,63 +1,63 @@
-import React  from 'react';
-import PropTypes from 'prop-types';
-import SignUpForm from '../components/SignUpForm.jsx';
+import React from 'react';
+import { withRouter } from 'react-router-dom';
+import Auth from '../modules/Auth.js';
+import LoginForm from '../components/LoginForm.jsx';
 
-class SignUpPage extends React.Component {
 
+class LoginPage extends React.Component {
+
+  /**
+   * Class constructor.
+   */
   constructor(props) {
     super(props);
 
+    const storedMessage = localStorage.getItem('successMessage');
+    let successMessage = '';
+
+    if (storedMessage) {
+      successMessage = storedMessage;
+      localStorage.removeItem('successMessage');
+    }
+
+    // set the initial component state
     this.state = {
       errors: [],
-      message: '',
+      successMessage: '',
       user: {
         email: '',
-        username: '',
         password: ''
       }
     };
 
     this.processForm = this.processForm.bind(this);
     this.changeUser = this.changeUser.bind(this);
-  };
+  }
 
-  changeUser(event) {
-    const field = event.target.name;
-    const user = this.state.user;
-    user[field] = event.target.value;
-
-    this.setState({
-      user
-    });
-  };
-  
+  /**
+   * Process the form.
+   *
+   * @param {object} event - the JavaScript event object
+   */
   processForm(event) {
     event.preventDefault();
    
-    fetch('http://localhost:3000/auth/signup', {
+    fetch('http://localhost:3000/auth/login', {
       method: 'post',
       headers: {
         'Accept': 'application/json, text/plain, */*',
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({
-        username: this.state.user.username, 
+      body: JSON.stringify({ 
         email: this.state.user.email,
         password: this.state.user.password,
       })
     }).then(res => {
       res.json().then(data => {
         if (res.status == '200') {
-          /*
-           * TODO:
-           * redirect to /login
-           */
-          this.setState({ 
-            errors: [],
-            message: data.message 
-          });
-
-          localStorage.setItem('successMessage', data.message);
+          this.setState({ errors: [] });
+          Auth.authenticateUser(data.token);
+          this.props.history.push('/dashboard');
         }
         if (res.status == '400' || res.status == '409') {
           const errors = data.errors.map( err => {
@@ -79,20 +79,39 @@ class SignUpPage extends React.Component {
         }
       }); 
     });
-  };
+    
+  }
 
+  /**
+   * Change the user object.
+   *
+   * @param {object} event - the JavaScript event object
+   */
+  changeUser(event) {
+    const field = event.target.name;
+    const user = this.state.user;
+    user[field] = event.target.value;
+
+    this.setState({
+      user
+    });
+  }
+
+  /**
+   * Render the component.
+   */
   render() {
     return (
-      <SignUpForm
+      <LoginForm
         onSubmit={this.processForm}
         onChange={this.changeUser}
         errors={this.state.errors}
-        message={this.state.message}
+        successMessage={this.state.successMessage}
         user={this.state.user}
       />
     );
-  };
+  }
 
 }
 
-export default SignUpPage;
+export default withRouter(LoginPage);

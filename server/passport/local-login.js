@@ -15,7 +15,7 @@ module.exports = new PassportLocalStrategy({
   }
   return knex('users')
     .limit(1)
-    .where({ email })
+    .where({ email: userData.email })
     .select('id', 'email', 'password')
     .then(rows => {
       const user = rows[0];
@@ -27,7 +27,7 @@ module.exports = new PassportLocalStrategy({
         return done(error);
       }
       // password not equal
-      if (user.password !== password) {
+      if (user.password !== userData.password) {
         const error = new Error('Incorrect email or password');
         error.name = 'IncorrectCredentialsError password not match';
         return done(error);

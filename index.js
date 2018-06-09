@@ -13,7 +13,6 @@ const app = express();
 const ajv = new Ajv({ allErrors: true });
 
 function authCheck(req, res, next) {
-  console.log('header auth token: ', req.headers.authorization);
   if (!req.headers.authorization) {
     return res.status(401).json({
       success: false,
@@ -24,7 +23,6 @@ function authCheck(req, res, next) {
 
   // const token = req.headers.authorization.split(' ')[1];
   const token = req.headers.authorization;
-  console.log(token);
   return jwt.verify(token, 'secret', (err, decoded) => {
     if (err) {
       return res.status(401).json({ 
@@ -33,10 +31,17 @@ function authCheck(req, res, next) {
       })
     }
     const userId = decoded.sub;
-    console.log('userId: ', userId);
     return knex('users')
       .where('id', userId)
-      .then(_ => next())
+      .then(rows => {
+        const user = rows[0];
+        console.log('user: ', user);
+        res.locals.user = {
+          username: user.username,
+          email: user.email
+        };
+        return next();
+      })
       .catch(err => {
         return res.status(401).json({
           message: 'auth err',
@@ -112,7 +117,6 @@ const userSignupSchema = {
 const validateUserSignup = ajv.compile(userSignupSchema);
 
 function userSignupValidation(req, res, next) { 
-  console.log('body: ', req.body);
   validateUserSignup(req.body)
     .then(_ => next())
     .catch(err => {
@@ -193,7 +197,7 @@ function userLoginValidation(req, res, next) {
     return res.status(400).json({
       success: false,
       message: 'Sorry You not passed user validation',
-      errors: err
+      errors: err.errors
     })
   })
 }
@@ -235,7 +239,9 @@ function userLogin(req, res, next) {
 }
 
 app.get('/api/dashboard', function(req, res) {
+  console.log('dashboard', res.locals);
   return res.status(200).json({
+    user: res.locals.user,
     message: "You're authorized to see this secret message."
   });
 })

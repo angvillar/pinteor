@@ -11,7 +11,8 @@ import InputLabel from '@material-ui/core/InputLabel';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import FormControl from '@material-ui/core/FormControl';
 
-const SignUpForm = ({ onSubmit, onChange, errors, message, user }) => {
+
+const LoginForm = ({ onSubmit, onChange, errors, successMessage, user }) => {
 
   const hasErr = (name) => {
     return !!errors.filter(err => err.name === name).length;
@@ -26,20 +27,8 @@ const SignUpForm = ({ onSubmit, onChange, errors, message, user }) => {
       <CardContent>
         <form action="/" onSubmit={onSubmit}>
           <Typography>
-            {message}
+            {successMessage}
           </Typography>
-          <div className="field">  
-            <FormControl error={hasErr('username')}>
-              <InputLabel htmlFor="username">Name</InputLabel>
-              <Input 
-                id="username" 
-                name="username"
-                onChange={onChange}
-                value={user.username}
-              />
-              <FormHelperText id="name-text">{ hasErr('username') ? errMessageFor('username') : '' }</FormHelperText>
-            </FormControl>
-          </div>
           <div className="field">
             <FormControl error={hasErr('email')}>
               <InputLabel htmlFor="email">Email</InputLabel>
@@ -66,14 +55,14 @@ const SignUpForm = ({ onSubmit, onChange, errors, message, user }) => {
             </FormControl>
           </div>
           <div className="field"> 
-          <Button variant="raised" type="submit" label="Create New Account" color="primary">
-            Create New Account
-          </Button>
+            <Button variant="raised" type="submit" label="Login" color="primary">
+              Login
+            </Button>
           </div>
           <div className="field"> 
-          <Typography color="textSecondary">
-            Already have an account? <Link to={'/login'}>Log in</Link>
-          </Typography>
+            <Typography color="textSecondary">
+              Do not have an account? <Link to={'/signup'}>Sign up</Link>
+            </Typography>
           </div> 
         </form>
       </CardContent>
@@ -81,13 +70,12 @@ const SignUpForm = ({ onSubmit, onChange, errors, message, user }) => {
   )
 };
 
-SignUpForm.propTypes = {
+LoginForm.propTypes = {
   onSubmit: PropTypes.func.isRequired,
   onChange: PropTypes.func.isRequired,
   errors: PropTypes.array.isRequired,
-  message: PropTypes.string.isRequired,
+  successMessage: PropTypes.string.isRequired,
   user: PropTypes.object.isRequired
 };
 
-
-export default SignUpForm;
+export default LoginForm;
